@@ -2,6 +2,7 @@ package standard;
 import java.awt.*; 
 import java.awt.event.*; 
 import javax.swing.*; 
+import javax.swing.undo.*; 
 import javax.swing.event.*; 
 
 public class  Notepad  extends JFrame {
@@ -292,84 +293,22 @@ public class  Notepad  extends JFrame {
         center.nCenter();
         show();
     
-		ediT.add(cuT  = new JMenuItem("Cut",  new ImageIcon(this.getClass().getResource("images/cut.gif"))));
-		ediT.add(copY = new JMenuItem("Copy", new ImageIcon(this.getClass().getResource("images/copy.gif"))));
-		ediT.add(pastE= new JMenuItem("Paste",new ImageIcon(this.getClass().getResource("images/paste.gif"))));
+	    ediT.add(undoAction);
+	    ediT.add(redoAction);
 
-		cuT.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-		copY.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-		pastE.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+	    toolBar.addSeparator();
+	    toolBar.add(undoAction);
+	    toolBar.add(redoAction);
+	    toolBar.addSeparator();
 
-		toolBar.add(cutButton   = new JButton(new ImageIcon(this.getClass().getResource("images/cut.gif"))));
-		toolBar.add(copyButton  = new JButton(new ImageIcon(this.getClass().getResource("images/copy.gif"))));
-		toolBar.add(pasteButton = new JButton(new ImageIcon(this.getClass().getResource("images/paste.gif"))));
-
-		cutButton.setToolTipText("Cut");
-		copyButton.setToolTipText("Copy");
-		pasteButton.setToolTipText("Paste");
-
-		cuT.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.cuT();
-			}
-		});
-		copY.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.copY();
-			}
-		});
-		pastE.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.pastE();
-			}
-		});
-
-		cutButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.cuT();
-			}
-		});
-		copyButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.copY();
-			}
-		});
-		pasteButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				actions.pastE();
-			}
-		});
-
-	
-        ediT.add(finD = new JMenuItem("Find", new ImageIcon(this.getClass().getResource("images/find.gif"))));
-        ediT.add(findNexT = new JMenuItem("Find Next"));
-        //ediT.insertSeparator(8);
-
-        /**
-         *allowing the finD      menu item to be selected by pressing ALT + F
-         *allowing the findNexT  menu item to be selected by pressing ALT + F3
-         */
-        finD.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-        findNexT.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, ActionEvent.CTRL_MASK));
-        toolBar.add(findButton  = new JButton(new ImageIcon(this.getClass().getResource("images/find.gif"))));
-        findButton.setToolTipText("Find");
-
-        finD.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae){
-                actions.finD();
-            }
-        });
-        findNexT.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae){
-                actions.findNexT();
-            }
-        });
-
-        findButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae){
-                actions.finD();
-            }
-        });
+	    textArea.getDocument().addUndoableEditListener(new UndoableEditListener(){
+			    public void undoableEditHappened(UndoableEditEvent e){
+			    //Remember the edit and update the menus
+			    undo.addEdit(e.getEdit());
+			    undoAction.update();
+			    redoAction.update();
+			    }
+			    });
     }
 
 	
@@ -380,14 +319,18 @@ public class  Notepad  extends JFrame {
     }
 
 	
-	private JButton cutButton, copyButton, pasteButton;
+    //for using undo & redo
+    UndoManager undo = new UndoManager();
+
+	
+    UndoAction undoAction = new UndoAction(this);
+
+	
+    RedoAction redoAction = new RedoAction(this);
 
 	
 
-    private JButton findButton;
-
-	
-    private JMenuItem finD, findNexT;
+    private JButton undoButton, redoButton;
 
 
 }
