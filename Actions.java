@@ -3,11 +3,7 @@ import java.io.*;
 import java.util.*; 
 import java.awt.event.*; 
 import javax.swing.*; 
-
-/**
- *A PUBLIC CLASS FOR ACTIONS.JAVA
- */
-public  class  Actions {
+public class  Actions {
 	
 	//declaration of the private variables used in the program
 	private int returnVal;
@@ -463,6 +459,24 @@ public  class  Actions {
 			}
 		}
 		n.setTitle(jfc.getSelectedFile().getName() + " - JAVA� Notepad");
+	}
+
+	
+	//to cut the selected text
+	public void cuT(){
+		n.getTextArea().cut();
+	}
+
+	
+	//to copy the selected text
+	public void copY(){
+		n.getTextArea().copy();
+	}
+
+	
+	//to paste the selected text
+	public void pastE(){
+		n.getTextArea().paste();
 	}
 
 
